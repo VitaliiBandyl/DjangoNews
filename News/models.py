@@ -36,6 +36,7 @@ class Post(models.Model):
     poster = models.ImageField("Poster", upload_to="news_posters/")
     public_time = models.DateTimeField(auto_now_add=True, verbose_name="Public Time", db_index=True)
     last_modified_time = models.DateTimeField(auto_now=True, verbose_name="Modified Time")
+    category = models.ForeignKey(Category, verbose_name="Category", on_delete=models.SET_NULL, null=True)
     url = models.SlugField(max_length=150, unique=True)
     draft = models.BooleanField("Draft", default=True)
 
@@ -54,6 +55,7 @@ class Comment(models.Model):
     text = models.TextField("Message", max_length=5000)
     parent = models.ForeignKey("self", verbose_name="Parent", on_delete=models.SET_NULL, null=True, blank=True)
     post = models.ForeignKey(Post, verbose_name="Post", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name - self.post
@@ -61,3 +63,4 @@ class Comment(models.Model):
     class Meta:
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
+        ordering = ('created',)
